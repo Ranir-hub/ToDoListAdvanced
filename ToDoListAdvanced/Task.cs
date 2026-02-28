@@ -6,21 +6,37 @@ using System.Text;
 
 namespace ToDoListAdvanced
 {
-    internal class Task : INotifyPropertyChanged
+    public class Task
     {
-        private string _title;
-        private string _description;
-        private DateTime _day;
-        private DateTime? _deadline;
-        private bool _status;
+        public string Title { get; set; } = "";
+        public string Description { get; set; } = "";
+        public DateTime Day { get; set; }
+        public DateTime? Deadline { get; set; }
+        public bool Status { get; set; } = false;
+
+        public Task(string title, string desctiption, DateTime day, DateTime? deadline){
+            Title = title; Description = desctiption; Day = day; Deadline = deadline; Status = false;
+        }
+    }
+
+    public class TaskViewModel
+    {
+        private readonly Task _task;
+
+        // Конструктор принимает модель
+        public TaskViewModel(Task task)
+        {
+            _task = task;
+        }
 
         public string Title
         {
-            get => _title; 
-            set {
-                if (value != _title)
+            get => _task.Title;
+            set
+            {
+                if (_task.Title != value)
                 {
-                    _title = value;
+                    _task.Title = value;
                     OnPropertyChanged();
                 }
             }
@@ -28,12 +44,38 @@ namespace ToDoListAdvanced
 
         public string Description
         {
-            get => _description;
+            get => _task.Description;
             set
             {
-                if (value != _description)
+                if (_task.Description != value)
                 {
-                    _description = value;
+                    _task.Description = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public DateTime Day
+        {
+            get => _task.Day;
+            set
+            {
+                if (_task.Day != value)
+                {
+                    _task.Day = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public DateTime? Deadline
+        {
+            get => _task.Deadline;
+            set
+            {
+                if (_task.Deadline != value)
+                {
+                    _task.Deadline = value;
                     OnPropertyChanged();
                 }
             }
@@ -41,48 +83,26 @@ namespace ToDoListAdvanced
 
         public bool Status
         {
-            get => _status;
+            get => _task.Status;
             set
             {
-                if(value != _status)
+                if (_task.Status != value)
                 {
-                    _status = value;
+                    _task.Status = value;
                     OnPropertyChanged();
-                    OnPropertyChanged(nameof(TextDecorations));
+                    OnPropertyChanged(nameof(IsStrikethrough));
                 }
             }
         }
+        public bool IsStrikethrough => Status;
 
-        public DateTime Day
-        {
-            get => _day;
-            set
-            {
-                if (_day != value)
-                {
-                    _day = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        public DateTime? deadline
-        {
-            get => _deadline;
-            set
-            {
-                if(value != _deadline)
-                {
-                    _deadline = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
+        public Task tasK => _task;
 
         public event PropertyChangedEventHandler? PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
+
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

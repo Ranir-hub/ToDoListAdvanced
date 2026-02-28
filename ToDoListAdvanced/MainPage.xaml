@@ -3,31 +3,35 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ToDoListAdvanced.MainPage">
 
-    <Grid RowDefinitions="*,110" Padding="30,10" ColumnSpacing="10">
-        <VerticalStackLayout Grid.Row="0" Grid.Column="0" Spacing="10" >
+    <Grid RowDefinitions="*,110" Padding="10" ColumnSpacing="10">
+        <ScrollView>
+            <VerticalStackLayout Grid.Row="0" Padding ="20,0" Grid.Column="0" Spacing="10" >
+                <Grid ColumnDefinitions="*,50" ColumnSpacing="10">
+                    <Entry Grid.Column="0" 
+                           Placeholder="Enter task" Text="{Binding NewTaskTitle}" 
+                           HorizontalOptions="Fill"/>
+                    <Button Grid.Column="1" Text="+" Command="{Binding Add}" 
+                            HorizontalOptions="End" WidthRequest="40"/>
+                </Grid>
 
-            <Grid ColumnDefinitions="*,50" ColumnSpacing="10">
-                <Entry Grid.Column="0" 
-                       Placeholder="Enter task" Text="{Binding Task}" 
-                       HorizontalOptions="Fill"/>
-                <Button Grid.Column="1" Text="+" 
-                        HorizontalOptions="End" WidthRequest="40"/>
-            </Grid>
-
-            <CollectionView ItemsSource="{Binding ToDoList}">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <StackLayout>
-                            <Entry Text="{Binding Title}"/>
-                            <Editor Text="{Binding Description}"/>
-                            <CheckBox IsChecked="{Binding Complete}"/>
-                        </StackLayout>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-        </VerticalStackLayout>
+                <CollectionView x:Name="ToDoListViewModel" ItemsSource="{Binding CurrentTasks}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid ColumnDefinitions="*,50,45" Padding="10, 4">
+                                <Entry Grid.Column="0" Text="{Binding Title}" FontSize="16"/>
+                                <CheckBox Grid.Column="1" 
+                                          HorizontalOptions="End" IsChecked="{Binding Complete}"
+                                          Margin="8,0,0,0"/>
+                                <Button Grid.Column="2" Text="-" Command="{Binding Remove}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+        </ScrollView>
 
         <HorizontalStackLayout Grid.Row="1" Spacing="10" HorizontalOptions="Center">
+            <DatePicker Date="{Binding CurrentDay}"/>
             <Button ImageSource="list.png"
                     MaximumWidthRequest="110" 
                     MinimumWidthRequest="50"></Button>
