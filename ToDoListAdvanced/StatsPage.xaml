@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ToDoListAdvanced.StatsPage">
+    <ScrollView>
+        <Grid RowDefinitions="400, 34,*" VerticalOptions="Start" Padding="30, 0" ColumnSpacing="10">
+            <GraphicsView Grid.Row="0" x:Name="statsView" HeightRequest="400" WidthRequest="400" HorizontalOptions="Center"/>
+            <Label Grid.Row="1" Text="Не выполненно:" FontSize="Subtitle"  />
+            <CollectionView x:Name="InComplete" Grid.Row="2">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="1" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid ColumnDefinitions="*, 64, 66" ColumnSpacing="4" Padding="10, 6" BackgroundColor="{StaticResource Secondary}">
+                            <Label Grid.Column="0" Text="{Binding Title}" FontSize="16"/>
+                            <Label Grid.Column="1" Text="{Binding Day, StringFormat='{0:dd:MM:yy}'}" FontSize="16" />
+                            <Label Grid.Column="2" Text="{Binding Deadline, StringFormat='{HH:mm}'}" FontSize="16" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+
+                <CollectionView.EmptyView>
+                    <StackLayout Padding="20">
+                        <Label Text="Все задачи выполнены" HorizontalOptions="Center" VerticalOptions="Start" FontSize="Subtitle"/>
+                    </StackLayout>
+                </CollectionView.EmptyView>
+            </CollectionView>
+        </Grid>
+    </ScrollView>
+</ContentPage>

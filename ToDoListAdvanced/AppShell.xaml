@@ -6,9 +6,12 @@
     xmlns:local="clr-namespace:ToDoListAdvanced"
     Title="ToDoListAdvanced">
 
-    <ShellContent
-        Title="ToDoList :3"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
-
+    <TabBar >
+        <Tab Icon="list.png" >
+            <ShellContent ContentTemplate="{DataTemplate local:MainPage}" />
+        </Tab>
+        <Tab Icon="stats.png">
+            <ShellContent ContentTemplate="{DataTemplate local:StatsPage}" />
+        </Tab>
+    </TabBar>
 </Shell>

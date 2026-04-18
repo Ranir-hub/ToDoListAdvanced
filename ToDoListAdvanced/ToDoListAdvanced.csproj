@@ -71,7 +71,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="CalendarPage.xaml">
+	  <MauiXaml Update="StatsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>
