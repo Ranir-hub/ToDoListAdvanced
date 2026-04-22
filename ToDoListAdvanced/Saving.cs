@@ -14,12 +14,6 @@ namespace ToDoListAdvanced
             await using FileStream createStream = File.Create(filename);
             await JsonSerializer.SerializeAsync(createStream, Tasks);
         }
-        public static void SaveSync(ObservableCollection<ToDoTask> tasks)
-        {
-            string filename = Path.Combine(FileSystem.AppDataDirectory, "ToDoListAdvanced.json");
-            using FileStream createStream = File.Create(filename);
-            JsonSerializer.Serialize(createStream, tasks);
-        }
         public static async Task<ObservableCollection<ToDoTask>?> Load()
         {
             string filename = Path.Combine(FileSystem.AppDataDirectory, "ToDoListAdvanced.json");

@@ -6,21 +6,76 @@ using System.Text;
 
 namespace ToDoListAdvanced
 {
-    public class ToDoTask
-    {
-        public string Title { get; set; } = "";
-        public string Description { get; set; } = "";
-        public DateTime Day { get; set; }
-        public TimeSpan? Deadline { get; set; }
-        public bool Complete { get; set; } = false;
 
-        public ToDoTask(string Title, string Description, DateTime Day, TimeSpan? Deadline, bool Complete)
+    public class ToDoTask : INotifyPropertyChanged
+    {
+        private DateTime _day;
+        private TimeSpan _deadline;
+        private string _title;
+        public bool _complete;
+
+        public ToDoTask(string title, DateTime day, TimeSpan deadline, bool complete)
         {
-            this.Title = Title;
-            this.Description = Description;
-            this.Day = Day;
-            this.Deadline = Deadline;
-            this.Complete = Complete;
+            Title = title; Day = day; Deadline = deadline; Complete = complete;
+        }
+
+        public string Title
+        {
+            get => _title;
+            set
+            {
+                if (_title != value)
+                {
+                    _title = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public DateTime Day
+        {
+            get => _day;
+            set
+            {
+                if (_day != value)
+                {
+                    _day = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public TimeSpan Deadline
+        {
+            get => _deadline;
+            set
+            {
+                if (_deadline != value)
+                {
+                    _deadline = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public bool Complete
+        {
+            get => _complete;
+            set
+            {
+                if (_complete != value)
+                {
+                    _complete = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
