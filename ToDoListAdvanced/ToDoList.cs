@@ -124,7 +124,10 @@ namespace ToDoListAdvanced
                         await Shell.Current.DisplayAlertAsync("Выход", "Вы успешно вышли из аккаунта", "OK");
                         LoginStatus = "Login";
                     }
-                    catch (Exception ex) { }
+                    catch (Exception ex)
+                    {
+                        await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
+                    }
                 }
                 else
                 {
@@ -133,18 +136,29 @@ namespace ToDoListAdvanced
                         bool isLoggedIn = await App._cloudSync.LoginAsync();
                         if (isLoggedIn)
                         {
-                            var loaded = await App._cloudSync.LoadFromCloudAsync();
-                            if (loaded != null && loaded.Count > 0)
+                            bool result = await Shell.Current.DisplayAlertAsync("Вход", "Вы успешно вошли в аккаунт. Загрузить данные с Google?", "Да", "Нет");
+                            if (result)
                             {
-                                App.GlobalTasks = loaded;
+                                var loaded = await App._cloudSync.LoadFromCloudAsync();
+                                if (loaded != null && loaded.Count > 0)
+                                {
+                                    App.GlobalTasks = loaded;
+                                }
+                                SubscribeToAllTasks(loaded);
+                                _ = Saving.Save(App.GlobalTasks);
+                                UpdateUI();
+                                await Shell.Current.DisplayAlertAsync("Данные", "Данные успешно загружены", "OK");
                             }
-                            SubscribeToAllTasks(loaded);
+                            else
+                            {
+                                _ = App._cloudSync.SaveToCloudAsync(App.GlobalTasks);
+                            }
+                            LoginStatus = "Logout";
                         }
-                        _ = Saving.Save(App.GlobalTasks);
-                        LoginStatus = "Logout";
-                        UpdateUI();
                     }
-                    catch (Exception ex)  { }
+                    catch (Exception ex)  {
+                        await Shell.Current.DisplayAlertAsync("Вход", ex.Message, "OK");
+                    }
                 }
             });
         }
@@ -154,7 +168,6 @@ namespace ToDoListAdvanced
         {
             _ = Saving.Save(App.GlobalTasks);
             RestartCloudSaveTimer();
-
         }
         private void SubscribeToAllTasks(IEnumerable<ToDoTask> tasks)
         {
@@ -194,7 +207,10 @@ namespace ToDoListAdvanced
                 }
                 _ = Saving.Save(App.GlobalTasks);
             }
-            catch (Exception ex) { }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlertAsync("Ошибка", ex.Message, "OK");
+            }
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -213,10 +229,14 @@ namespace ToDoListAdvanced
         {
             if (draggedTask == null || task == null || task == draggedTask) return;
 
-            int oldt = App.GlobalTasks.IndexOf(draggedTask);
             int newt = App.GlobalTasks.IndexOf(task);
+            TimeSpan swapDeadline = task.Deadline;
+            task.Deadline = draggedTask.Deadline;
+            draggedTask.Deadline = swapDeadline;
+
             App.GlobalTasks.Remove(draggedTask);
             App.GlobalTasks.Insert(newt, draggedTask);
+
             draggedTask = null;
             UpdateUI();
             _ = SaveDataAsync();

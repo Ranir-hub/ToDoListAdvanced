@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
+﻿using System.Collections.ObjectModel;
 using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Drive.v3;
 using Google.Apis.Services;
 using Google.Apis.Util;
 using Google.Apis.Util.Store;
-using Microsoft.Maui.Authentication; // Для открытия браузера
-using Microsoft.Maui.Storage; // FileSystem
 
 namespace ToDoListAdvanced
 {
@@ -48,19 +41,20 @@ namespace ToDoListAdvanced
                     ApplicationName = "ToDoListAdvanced"
                 });
 
+                _fileId = await GetOrCreateFileAsync();
+
                 return true;
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                return false;
+                throw new Exception("Вход не выполнен");
             }
         }
 
-        private async Task<string> GetOrCreateFileIdAsync()
+        private async Task<string> GetOrCreateFileAsync()
         {
             if (_fileId != null) return _fileId;
-            if (_driveService == null) throw new InvalidOperationException("Not logged in");
+            if (_driveService == null) throw new Exception("Вход не выполнен");
 
             var listRequest = _driveService.Files.List();
             listRequest.Q = $"name='{FileName}' and trashed=false";
@@ -91,7 +85,7 @@ namespace ToDoListAdvanced
 
             _fileId = createRequest.ResponseBody?.Id;
             if (string.IsNullOrEmpty(_fileId))
-                throw new Exception("Failed to create file on Google Drive (no id returned)");
+                throw new Exception("Ошибка создания файла");
 
             return _fileId;
         }
@@ -100,7 +94,7 @@ namespace ToDoListAdvanced
         {
             if (_driveService == null) return;
 
-            var fileId = await GetOrCreateFileIdAsync();
+            var fileId = await GetOrCreateFileAsync();
 
             using var stream = new MemoryStream();
             await JsonSerializer.SerializeAsync(stream, tasks, new JsonSerializerOptions { WriteIndented = true });
@@ -113,7 +107,7 @@ namespace ToDoListAdvanced
         {
             if (_driveService == null) return null;
 
-            var fileId = await GetOrCreateFileIdAsync();
+            var fileId = await GetOrCreateFileAsync();
 
             var request = _driveService.Files.Get(fileId);
             using var stream = new MemoryStream();
