@@ -230,9 +230,6 @@ namespace ToDoListAdvanced
             if (draggedTask == null || task == null || task == draggedTask) return;
 
             int newt = App.GlobalTasks.IndexOf(task);
-            TimeSpan swapDeadline = task.Deadline;
-            task.Deadline = draggedTask.Deadline;
-            draggedTask.Deadline = swapDeadline;
 
             App.GlobalTasks.Remove(draggedTask);
             App.GlobalTasks.Insert(newt, draggedTask);
